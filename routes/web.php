@@ -25,12 +25,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])   ->name('profile.destroy');
     
     // UserRooms
-    Route::get('/', function () {
-        return Inertia::render('UserRooms');
-    })->name('user_rooms.index');
+    Route::get('/', [RoomController::class, 'userIndex'])->name('user_rooms.index');
     
     // Rooms
-    Route::get('/rooms', function () { return Inertia::render('Rooms'); })->name('rooms.index'); // 一覧表示
+    Route::get('/rooms', [RoomController::class, 'index'])->name('rooms.index'); // 一覧表示
     Route::get('/rooms/create', [RoomController::class, 'create'])->name('rooms.create'); // 新規作成画面表示
     Route::post('/rooms/store', [RoomController::class, 'store'])->name('rooms.store'); // 新規作成
     Route::get('/rooms/{room_id}/edit', [RoomController::class, 'edit'])->name('rooms.edit'); // 編集画面表示

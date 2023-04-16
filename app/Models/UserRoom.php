@@ -31,6 +31,13 @@ class UserRoom extends Model
      */
     public function room()
     {
-        return $this->belongsTo('App\Models\Room', 'room_id');
+        return $this->belongsTo('App\Models\Room');
     }
+
+    public function toArray()
+    {
+        return array_merge(parent::toArray(), [
+            'room' => $this->room
+        ]);
+    }   
 }

@@ -6,6 +6,7 @@ use App\Models\Room;
 use App\Models\UserRoom;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Collection;
 
 class UserRoomRepository
 {
@@ -25,5 +26,24 @@ class UserRoomRepository
         ]);
 
         Log::info('UserRoomの新規作成が完了しました。'.'user_id:'.$user_id.', room_id'.$Room->id);
+    }
+
+    /**
+     * user_idに紐づくUserRoomを全件取得する
+     * NOTE：Vue表示用に親テーブルも取得する
+     *
+     * @param integer     $user_id
+     * @return Collection $UserRooms
+     */
+    public function findAllWithParent(int $user_id):Collection
+    {
+        $UserRooms = 
+            UserRoom::where('user_id', '=', $user_id)
+            // 親テーブルの取得
+            ->with('Room')
+            ->with('User')  
+            ->get();
+
+        return $UserRooms;
     }
 }

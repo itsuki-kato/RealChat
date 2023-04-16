@@ -1,9 +1,15 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { usePage } from '@inertiajs/inertia-vue3';
-import { Head } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/inertia-vue3';
 import { computed, reactive, ref } from 'vue';
+import FlushMessage from '@/Components/FlashMessage.vue';
 
+const props = defineProps({
+    UserRooms: {
+        type: Object
+    }
+})
 const messages = reactive([
     {
         from: 'You',
@@ -37,35 +43,28 @@ const message = computed(() => usePage().props.value.flash.message)
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">UserRooms</h2>
         </template>
 
-        <div v-if="message" class="text-danger">
-            {{ message }}
-        </div>
+        <!-- FlushMessage -->
+        <FlushMessage :message="message"></FlushMessage>
 
         <v-container>
             <div class="mt-5">
                 <v-row justify="start">
-                    <v-col v-for="n in 10" :key="n" cols="12" sm="4">
+                    <v-col v-for="UserRoom in UserRooms" :key="UserRoom.id" cols="12" sm="4">
                         <v-card width="350">
                             <v-img height="200" src="https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg"
                                 cover class="text-white">
                                 <v-toolbar color="rgba(0, 0, 0, 0)" theme="dark">
-                                    <template v-slot:prepend>
-                                        <v-btn icon="$menu"></v-btn>
-                                    </template>
 
                                     <v-toolbar-title class="text-h6">
-                                        Messages
+                                        {{ UserRoom.room.name }}
                                     </v-toolbar-title>
 
-                                    <template v-slot:append>
-                                        <v-btn icon="mdi-dots-vertical"></v-btn>
-                                    </template>
                                 </v-toolbar>
                             </v-img>
 
                             <v-card-text>
                                 <div class="font-weight-bold ms-1 mb-2">
-                                    Today
+                                    {{ UserRoom.user.name }}
                                 </div>
 
                                 <v-timeline density="compact" align="start">

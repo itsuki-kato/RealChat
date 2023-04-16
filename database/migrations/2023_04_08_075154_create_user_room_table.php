@@ -8,14 +8,11 @@ class CreateUserRoomTable extends Migration
 {
     public function up()
     {
-        Schema::create('user_room', function (Blueprint $table) {
+        Schema::create('user_rooms', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('room_id');
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('room_id')->constrained('rooms');
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
         });
     }
 

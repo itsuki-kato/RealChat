@@ -26,11 +26,19 @@ class RoomController extends Controller
     {}
 
     /**
-     * Roomの一覧表示
+     * Roomの一覧表示(UserRoom以外)
      */
     public function index(Request $request)
     {
         return Inertia::render('Rooms');
+    }
+
+    public function userIndex()
+    {
+        // 一覧表示用にuser_idに紐づくUserRoomを全件取得する
+        $UserRooms = $this->userRoomRepository->findAllWithParent(Auth::user()->id);
+
+        return Inertia::render('UserRooms', ['UserRooms' => $UserRooms]);
     }
 
     /**

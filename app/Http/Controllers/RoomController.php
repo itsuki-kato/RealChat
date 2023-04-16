@@ -2,26 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\Room\RoomUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Models\Room;
-use App\Models\UserRoom;
 use App\Repositories\RoomRepository;
 use App\Repositories\UserRoomRepository;
-use Exception;
+use App\Services\FileService;
 
 class RoomController extends Controller
 {
     public function __construct(
         private RoomRepository $roomRepository,
         private UserRoomRepository $userRoomRepository,
+        private FileService $fileService,
     )
     {}
 
@@ -55,14 +52,30 @@ class RoomController extends Controller
     public function store(RoomUpdateRequest $request)
     {   
         // RoomUpdateRequestのバリデーションを通過した場合
-        // 作成するRoom名をformから取得
-        $name = $request->get('name');
 
+        // 作成するRoom情報をformから取得
+        $room_name   = $request->get('name');
+        $room_detail = $request->get('detail');
+        // TODO：配列で取得したくない
+        $room_img    = $request->file('room_img');
+
+        DB::beginTransaction();
         try 
         {
-            DB::beginTransaction();
+            // ファイルアップロード処理(public/room/user_id/file_name)
+            if(isset($room_img)) {
+                $this->fileService->uploadImg($room_img[0], 'room/'.Auth::user()->id);
+            }
+
+            // Roomの作成
+            $Room = $this->roomRepository->createAndReturn(
+                Auth::user()->id, 
+                $room_name,
+                $room_detail,
+                isset($room_img) ? $room_img[0]->getClientOriginalName() : null
+            );
+
             // オーナーは自動でRoomに参加するため、UserRoomも同時作成する
-            $Room = $this->roomRepository->createAndReturn(Auth::user()->id, $name);
             $this->userRoomRepository->create(Auth::user()->id, $Room);
 
             DB::commit();
@@ -70,7 +83,7 @@ class RoomController extends Controller
         catch(\Exception $e)
         {
             DB::rollBack();
-            Log::error('Roomが新規作成できませんでした。user_id:'.Auth()->user->id);
+            Log::error('Roomが新規作成できませんでした。user_id:'.Auth::user()->id);
 
             throw new \Exception($e);
         }

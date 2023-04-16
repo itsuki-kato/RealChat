@@ -11,6 +11,8 @@ class Room extends Model
 
     protected $fillable = [
         'name',
+        'detail',
+        'file_path',
         'user_id'
     ];
 

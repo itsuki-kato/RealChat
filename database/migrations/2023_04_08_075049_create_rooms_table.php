@@ -11,6 +11,8 @@ class CreateRoomsTable extends Migration
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('detail')->nullable();
+            $table->string('file_path')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
             

@@ -21,6 +21,7 @@ class RoomUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        // TODO：その他の項目のバリデーションを実装
         return [
             'name' => ['required', 'min:1', 'max:20'],
         ];

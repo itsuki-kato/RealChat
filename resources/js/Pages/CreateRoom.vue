@@ -34,7 +34,7 @@ const createRoom = () => {
         </template>
 
         <v-container>
-            <v-sheet class="mx-auto">
+            <v-sheet class="mx-auto border">
                 <v-form @submit.prevent="createRoom">
                     <v-text-field v-model="form.name" :rules="form.rules" label="Room Name"></v-text-field>
                     <v-text-field v-model="form.detail" label="Room Detail"></v-text-field>

@@ -2,14 +2,24 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { usePage } from '@inertiajs/inertia-vue3';
 import { Head } from '@inertiajs/inertia-vue3';
-import { computed, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import FlushMessage from '@/Components/FlashMessage.vue';
 
+// Controllerから渡された値を取得
 const props = defineProps({
     UserRooms: {
         type: Object
     }
 })
+
+// 画像パス(public)以降の生成
+const getFilePath = (UserRoom) => {
+    return `/storage/room/${UserRoom.user_id}/${UserRoom.room.file_path}`
+}
+
+// セッションからフラッシュメッセージを取得
+const message = computed(() => usePage().props.value.flash.message)
+
 const messages = reactive([
     {
         from: 'You',
@@ -31,7 +41,6 @@ const messages = reactive([
     },
 ]);
 
-const message = computed(() => usePage().props.value.flash.message)
 
 </script>
 
@@ -51,7 +60,7 @@ const message = computed(() => usePage().props.value.flash.message)
                 <v-row justify="start">
                     <v-col v-for="UserRoom in UserRooms" :key="UserRoom.id" cols="12" sm="4">
                         <v-card width="350">
-                            <v-img height="200" src="https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg"
+                            <v-img height="200" :src="getFilePath(UserRoom)"
                                 cover class="text-white">
                                 <v-toolbar color="rgba(0, 0, 0, 0)" theme="dark">
 

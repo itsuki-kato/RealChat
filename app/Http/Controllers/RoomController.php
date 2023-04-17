@@ -60,11 +60,13 @@ class RoomController extends Controller
         $room_img    = $request->file('room_img');
 
         DB::beginTransaction();
-        try 
+        try
         {
-            // ファイルアップロード処理(public/room/user_id/file_name)
+            // 画像は任意(default=null)のためあれば登録する
+            $file_name = null;
             if(isset($room_img)) {
-                $this->fileService->uploadImg($room_img[0], 'room/'.Auth::user()->id);
+                // ファイルアップロード処理(public/room/$user_id/$file_name)
+                $file_name = $this->fileService->uploadImg($room_img[0], 'room/'.Auth::user()->id);
             }
 
             // Roomの作成
@@ -72,7 +74,7 @@ class RoomController extends Controller
                 Auth::user()->id, 
                 $room_name,
                 $room_detail,
-                isset($room_img) ? $room_img[0]->getClientOriginalName() : null
+                $file_name
             );
 
             // オーナーは自動でRoomに参加するため、UserRoomも同時作成する

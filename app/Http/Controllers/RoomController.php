@@ -25,15 +25,20 @@ class RoomController extends Controller
     /**
      * Roomの一覧表示(UserRoom以外)
      */
-    public function index(Request $request)
+    public function index()
     {
-        return Inertia::render('Rooms');
+        $Rooms = $this->roomRepository->findWithoutUserRoom(Auth::user()->id);
+
+        return Inertia::render('Rooms', ['Rooms' => $Rooms]);
     }
 
+    /**
+     * UserRoomの一覧表示
+     */
     public function userIndex()
     {
         // 一覧表示用にuser_idに紐づくUserRoomを全件取得する
-        $UserRooms = $this->userRoomRepository->findAllWithParent(Auth::user()->id);
+        $UserRooms = $this->userRoomRepository->find(Auth::user()->id);
 
         return Inertia::render('UserRooms', ['UserRooms' => $UserRooms]);
     }
@@ -63,18 +68,18 @@ class RoomController extends Controller
         try
         {
             // 画像は任意(default=null)のためあれば登録する
-            $file_name = null;
+            $uploaded_file_name = null;
             if(isset($room_img)) {
-                // ファイルアップロード処理(public/room/$user_id/$file_name)
-                $file_name = $this->fileService->uploadImg($room_img[0], 'room/'.Auth::user()->id);
+                // ファイルアップロード処理(public/room/$user_id/$file_name配下)
+                $uploaded_file_name = $this->fileService->uploadImgAndGetName($room_img[0], 'room/'.Auth::user()->id);
             }
 
             // Roomの作成
-            $Room = $this->roomRepository->createAndReturn(
+            $Room = $this->roomRepository->createAndGet(
                 Auth::user()->id, 
                 $room_name,
                 $room_detail,
-                $file_name
+                $uploaded_file_name
             );
 
             // オーナーは自動でRoomに参加するため、UserRoomも同時作成する

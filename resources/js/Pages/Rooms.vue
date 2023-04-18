@@ -1,8 +1,19 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/inertia-vue3';
-
 import { reactive, ref } from 'vue';
+
+// Controllerから渡された値を取得
+const props = defineProps({
+    Rooms: {
+        type: Object
+    }
+})
+
+// 画像パス(public以降)の生成
+const getFilePath = (Room) => {
+    return `/storage/room/${Room.user_id}/${Room.file_path}`
+}
 
 const messages = reactive([
     {
@@ -37,28 +48,22 @@ const messages = reactive([
         <v-container>
             <div class="mt-5">
                 <v-row justify="start">
-                    <v-col v-for="n in 10" :key="n" cols="12" sm="4">
+                    <v-col v-for="Room in Rooms" :key="Room.id" cols="12" sm="4">
                         <v-card width="350">
-                            <v-img height="200" src="https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg"
+                            <v-img height="200" :src="getFilePath(Room)"
                                 cover class="text-white">
                                 <v-toolbar color="rgba(0, 0, 0, 0)" theme="dark">
-                                    <template v-slot:prepend>
-                                        <v-btn icon="$menu"></v-btn>
-                                    </template>
 
                                     <v-toolbar-title class="text-h6">
-                                        Messages
+                                        {{ Room.name }}
                                     </v-toolbar-title>
 
-                                    <template v-slot:append>
-                                        <v-btn icon="mdi-dots-vertical"></v-btn>
-                                    </template>
                                 </v-toolbar>
                             </v-img>
 
                             <v-card-text>
                                 <div class="font-weight-bold ms-1 mb-2">
-                                    Today
+                                    {{ Room.user.name }}
                                 </div>
 
                                 <v-timeline density="compact" align="start">

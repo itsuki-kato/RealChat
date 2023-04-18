@@ -12,7 +12,7 @@ const props = defineProps({
     }
 })
 
-// 画像パス(public)以降の生成
+// 画像パス(public以降)の生成
 const getFilePath = (UserRoom) => {
     return `/storage/room/${UserRoom.user_id}/${UserRoom.room.file_path}`
 }

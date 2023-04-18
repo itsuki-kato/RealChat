@@ -17,6 +17,7 @@ class UserRoomRepository
      *
      * @param integer $user_id
      * @param Room 　　$Room
+     * @return void
      */
     public function create(int $user_id, Room $Room):void
     {
@@ -35,7 +36,7 @@ class UserRoomRepository
      * @param integer     $user_id
      * @return Collection $UserRooms
      */
-    public function findAllWithParent(int $user_id):Collection
+    public function find(int $user_id):Collection
     {
         $UserRooms = 
             UserRoom::where('user_id', '=', $user_id)

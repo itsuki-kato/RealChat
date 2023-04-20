@@ -21,9 +21,11 @@ class RoomRepository
     {
         $Rooms =
             Room::join('user_rooms', function ($join) {
-                $join->on('rooms.user_id', '!=', 'user_rooms.user_id')
-                    ->where('user_rooms.user_id', '=', DB::raw('?'));
+                $join->on('rooms.user_id', '=', 'user_rooms.user_id');
             })
+            ->where('user_rooms.user_id', '!=', DB::raw('?'))
+            // 同じuser_idが複数あるため重複したレコードが取得されるためdistinct
+            ->distinct()
             ->select('rooms.*')
             ->with('user')
             ->setBindings([$user_id])

@@ -76,7 +76,7 @@ class RoomController extends Controller
 
             // Roomの作成
             $Room = $this->roomRepository->createAndGet(
-                Auth::user()->id, 
+                Auth::user()->id,
                 $room_name,
                 $room_detail,
                 $uploaded_file_name

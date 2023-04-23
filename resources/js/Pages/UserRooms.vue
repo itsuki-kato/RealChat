@@ -60,7 +60,7 @@ const messages = reactive([
             <div class="mt-5">
                 <v-row justify="start">
                     <v-col v-for="UserRoom in UserRooms" :key="UserRoom.id" cols="12" sm="4">
-                        <Link :href="route('chats.index')">
+                        <Link :href="route('chats.index', { room_id : UserRoom.room_id })">
                             <v-card width="350">
                                 <v-img height="200" :src="getFilePath(UserRoom)"
                                     cover class="text-white">

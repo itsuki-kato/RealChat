@@ -37,7 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/rooms/{room_id}',   [RoomController::class, 'destroy'])->name('rooms.destroy'); // 削除
 
     // Chats
-    Route::get('/chats', [ChatController::class, 'index'])->name('chats.index');   // 一覧表示
+    Route::get('/chats/{room_id}', [ChatController::class, 'index'])->name('chats.index');   // 一覧表示
+    Route::post('/chats/store', [ChatController::class, 'store'])->name('chats.store');   // 
 });
 
 require __DIR__.'/auth.php';

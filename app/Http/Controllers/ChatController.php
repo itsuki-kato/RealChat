@@ -19,7 +19,7 @@ class ChatController extends Controller
      */
     public function index(int $room_id)
     {
-        $Messages = $this->messageRepository->getMessages(Auth::user()->id, $room_id);
+        $Messages = $this->messageRepository->getMessages($room_id);
 
         return Inertia::render('ChatRoom', [
             'user_id' => Auth::user()->id,

@@ -6,12 +6,22 @@ use App\Models\Message;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Collection;
 
 class MessageRepository
 {
-    public function getMessages(int $user_id, int $room_id)
+    /**
+     * Roomごとのメッセージの取得
+     *
+     * @param integer $room_id
+     * @return Collection $Messeages
+     */
+    public function getMessages(int $room_id)
     {
-        $Messages = Message::where('user_id', '=', $user_id)->where('room_id', '=', $room_id)->get();
+        $Messages = Message::where('room_id', '=', $room_id)
+            ->with('user')
+            ->get();
+
         return $Messages;
     }
 

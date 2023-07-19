@@ -6,6 +6,7 @@ import FlushMessage from '@/Components/FlashMessage.vue';
 import { Head } from '@inertiajs/inertia-vue3';
 import FileInput from '@/Components/FileInput.vue';
 import { Inertia } from '@inertiajs/inertia';
+import BackButton from '@/Components/BackButton.vue';
 
 const props = defineProps({
     Messages: {
@@ -18,7 +19,7 @@ const props = defineProps({
     room_id: {
         type: Number,
         required: true
-    }
+    },
 })
 
 const form = reactive({
@@ -37,6 +38,7 @@ const validMessage = () => {
 
 const sendMessage = () => {
     Inertia.post(route('chats.store'), form)
+
 }
 </script>
 <template>
@@ -45,12 +47,13 @@ const sendMessage = () => {
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">ChatRoom</h2>
+            <BackButton stringRoute="rooms.index">mdoy</BackButton>
         </template>
         <v-container>
             <div class="chat-wrapper">
                 <div class="chat-list">
-                    <p v-for="Message in Messages" :key="Message.id" class="chat-item">
-                        {{ Message.content }}
+                    <p v-for="Message in Messages" :key="Message.user.id" class="chat-item">
+                        {{ Message.content }} <br> {{ Message.user_id }}
                     </p>
                 </div>
                 <div class="mt-5 border">

@@ -14,6 +14,6 @@ const back = () => {
 </script>
 <template>
     <Link :href="route(stringRoute)">
-        <slot />
+        Back!
     </Link>
 </template>

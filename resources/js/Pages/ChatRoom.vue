@@ -47,7 +47,7 @@ const sendMessage = () => {
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">ChatRoom</h2>
-            <BackButton stringRoute="rooms.index">mdoy</BackButton>
+            <BackButton stringRoute="rooms.index"></BackButton>
         </template>
         <v-container>
             <div class="chat-wrapper">

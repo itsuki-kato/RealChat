@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Repositories\MessageRepository;
+use App\Events\ChatEvent;
+use App\Models\User;
 
 class ChatController extends Controller
 {
@@ -39,6 +41,9 @@ class ChatController extends Controller
         $room_id = $request->get('send_room_id');
 
         $this->messageRepository->create($send_message, $send_file, $user_id, $room_id);
+
+        // リアルタイム化のためイベントリスナーを呼び出し
+        event(new ChatEvent($send_message, $user_id, $room_id));
 
         // chat画面にリダイレクト
         return to_route('chats.index', ['room_id' => $room_id]);

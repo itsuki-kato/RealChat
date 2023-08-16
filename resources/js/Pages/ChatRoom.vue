@@ -6,7 +6,6 @@ import FlushMessage from '@/Components/FlashMessage.vue';
 import { Head } from '@inertiajs/inertia-vue3';
 import FileInput from '@/Components/FileInput.vue';
 import { Inertia } from '@inertiajs/inertia';
-import BackButton from '@/Components/BackButton.vue';
 
 const props = defineProps({
     Messages: {
@@ -36,6 +35,19 @@ const validMessage = () => {
     return true
 }
 
+onMounted(() => {
+    window.Echo.channel('chat-channel')
+    .listen('ChatEvent', (e)=> {
+        getMessages()
+        console.log('broadcast done')
+    })
+})
+
+const getMessages = () => {
+    Inertia.get(route('chats.index', { room_id : props.room_id }));
+    console.log('get messages done')
+}
+
 const sendMessage = () => {
     Inertia.post(route('chats.store'), form)
 
@@ -47,7 +59,6 @@ const sendMessage = () => {
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">ChatRoom</h2>
-            <BackButton stringRoute="rooms.index"></BackButton>
         </template>
         <v-container>
             <div class="chat-wrapper">
@@ -68,9 +79,6 @@ const sendMessage = () => {
     </AuthenticatedLayout>
 </template>
 <style scoped>
-.chat-list {
-    height: 500px;
-}
 .chat-item {
     border: 1px solid black;
 }

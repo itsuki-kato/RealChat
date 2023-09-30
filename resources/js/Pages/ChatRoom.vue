@@ -1,12 +1,11 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { usePage } from '@inertiajs/inertia-vue3';
-import { computed, onMounted, reactive, ref } from 'vue';
+import { reactive } from 'vue';
 import FlushMessage from '@/Components/FlashMessage.vue';
+import ChatMessage from '@/Components/ChatMessage.vue';
 import { Head } from '@inertiajs/inertia-vue3';
 import FileInput from '@/Components/FileInput.vue';
 import { Inertia } from '@inertiajs/inertia';
-import axios from 'axios';
 
 const props = defineProps({
     Messages: {
@@ -37,27 +36,6 @@ const validMessage = () => {
     return true
 }
 
-// コンポーネントマウント時にチャットイベントを参照する
-// TODO：コンポーネント分け
-onMounted(() => {
-    window.Echo.channel('chat-channel')
-    .listen('ChatEvent', (e)=> {
-       getMessages()
-        console.log('broadcast done')
-    })
-})
-
-// メッセージ取得用メソッド
-const getMessages = () => {
-    axios.get(`/api/messages/${props.room_id}`)
-    .then(res => {
-        console.log('success')
-        console.log(res.data.message)
-    }).catch(error => {
-        console.error(error)
-    })
-}
-
 // 入力されたメッセージを送信する
 const sendMessage = () => {
     Inertia.post(route('chats.store'), form)
@@ -72,11 +50,7 @@ const sendMessage = () => {
         </template>
         <v-container>
             <div class="chat-wrapper">
-                <div class="chat-list">
-                    <p v-for="Message in Messages" :key="Message.user.id" class="chat-item">
-                        {{ Message.content }} <br> {{ Message.user_id }}
-                    </p>
-                </div>
+                <ChatMessage :Messages="Messages" :room_id="room_id"/>
                 <div class="mt-5 border">
                     <v-form @submit.prevent="sendMessage">
                         <FileInput v-model="form.send_file"></FileInput>

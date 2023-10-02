@@ -18,11 +18,32 @@ class MessageRepository
      */
     public function getMessages(int $room_id)
     {
-        $Messages = Message::where('room_id', '=', $room_id)
-            ->with('user')
-            ->get();
+        $query = DB::table('Messages')
+            ->select('id', 'user_id', 'room_id', 'content')
+            ->where('room_id', '=', $room_id);
+
+        $Messages = $query->get();
 
         return $Messages;
+    }
+
+    /**
+     * Roomごとのメッセージの取得
+     *
+     * @param integer $room_id
+     * @return Message $Messeages
+     */
+    public function getLatestMessage(int $room_id, int $user_id)
+    {
+        $query = DB::table('Messages')
+            ->select('id', 'user_id', 'room_id', 'content')
+            ->where('room_id', '=', $room_id)
+            ->where('user_id', '=', $user_id)
+            ->orderBy('created_at', 'desc');
+
+        $Message = $query->first();
+
+        return $Message;
     }
 
     /**

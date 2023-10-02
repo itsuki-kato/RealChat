@@ -19,4 +19,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/messages/{room_id}', [ApiMessageController::class, 'get']);
+Route::get('/messages', [ApiMessageController::class, 'getLatestMessage']);

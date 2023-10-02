@@ -22,6 +22,7 @@ class ChatEvent implements ShouldBroadcast
     public function __construct(
         public string $message,
         public int    $user_id,
+        public int    $room_id,
     )
     {}
 

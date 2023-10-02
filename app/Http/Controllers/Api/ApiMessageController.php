@@ -21,12 +21,22 @@ class ApiMessageController extends Controller
     /**
      * room_idに紐づくMessageの全件取得
      */
-    public function get($room_id)
+    public function getLatestMessage(Request $request)
     {
-        // $Messages = $this->messageRepository->getMessages($request->query('room_id'));
+        // TODO：非同期通信以外を弾く
+        Log::info('新規メッセージの取得開始');
 
-        // return to_route('chats.index', ['room_id' => $room_id]);
-        return response()->json(['message' => 'hello']);
+        $Message = $this->messageRepository->getLatestMessage($request->room_id, $request->user_id);
+
+        Log::info('新規メッセージの取得完了');
+
+        Log::debug($Message->content.$Message->id.$Message->user_id);
+
+        return response()->json(
+            [
+                'Message' => $Message, 
+                'res_message' => 'チャットメッセージ取得完了。'
+            ], 200);
     }
 
     /**

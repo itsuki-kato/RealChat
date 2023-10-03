@@ -30,8 +30,6 @@ class ApiMessageController extends Controller
 
         Log::info('新規メッセージの取得完了');
 
-        Log::debug($Message->content.$Message->id.$Message->user_id);
-
         return response()->json(
             [
                 'Message' => $Message, 

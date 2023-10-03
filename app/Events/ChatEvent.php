@@ -20,7 +20,8 @@ class ChatEvent implements ShouldBroadcast
      * Create a new event instance.
      */
     public function __construct(
-        public string $message,
+        public int    $id,
+        public string $content,
         public int    $user_id,
         public int    $room_id,
     )

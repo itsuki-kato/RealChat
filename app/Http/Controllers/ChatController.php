@@ -8,6 +8,8 @@ use Inertia\Inertia;
 use App\Repositories\MessageRepository;
 use App\Events\ChatEvent;
 use App\Models\User;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Support\Facades\Log;
 
 class ChatController extends Controller
 {
@@ -35,15 +37,24 @@ class ChatController extends Controller
      */
     public function store(Request $request)
     {
-        $send_message = $request->get('send_message');
-        $send_file = $request->file('send_file');
-        $user_id = $request->get('send_user_id');
-        $room_id = $request->get('send_room_id');
+        $content = $request->get('content');
+        $file = $request->file('file');
+        $user_id = $request->get('user_id');
+        $room_id = $request->get('room_id');
 
-        $this->messageRepository->create($send_message, $send_file, $user_id, $room_id);
+        // 新規メッセージの作成
+        Log::info('[新規メッセージの作成開始]user_id:'.$user_id.','.'room_id:'.$room_id);
 
-        // リアルタイム化のためイベントリスナーを呼び出し
-        event(new ChatEvent($send_message, $user_id, $room_id));
+        $Message = $this->messageRepository->create($content, $file, $user_id, $room_id);
+
+        Log::info('[新規メッセージの作成完了]id:'.$Message?->id);
+
+        if(isset($Message)) {
+            // リアルタイム化のためイベントを作成
+            event(new ChatEvent($Message->id, $Message->content, $Message->user_id, $Message->room_id));
+        } else {
+            throw new NotFoundHttpException('新規メッセージが取得できませんでした。');
+        }
 
         // chat画面にリダイレクト
         return to_route('chats.index', ['room_id' => $room_id]);

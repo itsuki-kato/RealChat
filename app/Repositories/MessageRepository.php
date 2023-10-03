@@ -53,7 +53,7 @@ class MessageRepository
      * @param UploadedFile|null $send_file // 未実装
      * @param integer $user_id
      * @param integer $room_id
-     * @return void
+     * @return Message $Message
      */
     public function create(
         string $send_message=null, 
@@ -62,10 +62,12 @@ class MessageRepository
         int $room_id
     )
     {
-        Message::create([
+        $Message = Message::create([
             'user_id' => $user_id,
             'room_id' => $room_id,
             'content' => $send_message    
         ]);
+
+        return $Message;
     }
 }

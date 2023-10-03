@@ -1,10 +1,10 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { ref } from 'vue';
-import ChatMessage from '@/Components/ChatMessage.vue';
-import ChatForm from '@/Components/ChatForm.vue';
 import { Head } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
+import { ref } from 'vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ChatMessage from '@/Components/ChatMessage.vue';
+import ChatForm from '@/Components/ChatForm.vue';
 
 const props = defineProps({
     Messages: {
@@ -23,17 +23,24 @@ const props = defineProps({
 // 受け取ったPropsをリアクティブに定義
 const RefMessages = ref(props.Messages);
 
-// 子コンポーネントから受け取った新規メッセージを追加
-const updateMessage = (NewMessage) => {
-    console.log(NewMessage, '[ChatRoom]: 子コンポーネントからメッセージを受信')
-    RefMessages.value.push(NewMessage.Message)
+// TODO:非同期にする
+// 入力されたメッセージを送信する
+const sendMessage = (form) => {
+    Inertia.post(route('chats.store'), form)
 }
 
-// 入力されたメッセージを送信する
-const sendMessage = (NewMessage2) => {
-    console.log(NewMessage2)
-    Inertia.post(route('chats.store'), NewMessage2)
+// コンポーネント作成時に実行する処理
+const created = () => {
+    // chat-channelイベントに接続してチャット送信イベントを監視
+    window.Echo.channel('chat-channel')
+    .listen('ChatEvent', (NewMessage)=> {
+        // リアクティブなメッセージの配列に新規メッセージを追加
+        RefMessages.value.push(NewMessage)
+        console.log('broadcast done')
+    })
 }
+
+created()
 </script>
 <template>
     <Head title="Dashboard" />
@@ -43,7 +50,7 @@ const sendMessage = (NewMessage2) => {
         </template>
         <v-container>
             <div class="chat-wrapper">
-                <ChatMessage @fetch_message="updateMessage" :RefMessages="RefMessages" :room_id="room_id" :user_id="user_id"/>
+                <ChatMessage :RefMessages="RefMessages" :room_id="room_id" :user_id="user_id"/>
                 <ChatForm @send_message="sendMessage" :user_id="user_id" :room_id="room_id"/>
             </div>
         </v-container>

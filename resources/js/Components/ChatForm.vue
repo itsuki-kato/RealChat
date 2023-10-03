@@ -1,7 +1,7 @@
 <script setup>
 import { reactive } from 'vue';
-import FileInput from '@/Components/FileInput.vue';
 import { defineEmits } from 'vue';
+import FileInput from '@/Components/FileInput.vue';
 
 const props = defineProps({
     user_id: {
@@ -33,6 +33,7 @@ const validMessage = () => {
     }
 }
 
+// 親コンポーネントにイベントを送信
 const emitMessage = () => {
     const NewMessage = {
         content: form.content,
@@ -40,12 +41,18 @@ const emitMessage = () => {
         room_id: form.room_id
     }
     emit_event_send_message('send_message', NewMessage)
+
+    // フォームをクリア
+    form.content = ''
+    form.file = null
+    form.user_id = ''
+    form.room_id = ''
 }
 </script>
 <template>
     <div class="mt-5 border">
         <FileInput v-model="form.file"></FileInput>
-        <v-textarea clearable label="Label" variant="solo" v-model="form.content"></v-textarea>
+        <v-textarea clearable label="入力してください" variant="solo" v-model="form.content"></v-textarea>
         <v-btn type="submit" block class="mt-2" @click="emitMessage" :disabled="validMessage()">Submit</v-btn>
     </div>
 </template>

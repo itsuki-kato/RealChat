@@ -28,7 +28,7 @@ class ApiMessageController extends Controller
 
         $Message = $this->messageRepository->getLatestMessage($request->room_id, $request->user_id);
 
-        Log::info('新規メッセージの取得完了');
+        Log::info('新規メッセージの取得完了'.$Message?->id);
 
         return response()->json(
             [
@@ -40,19 +40,19 @@ class ApiMessageController extends Controller
     /**
      * Messageの保存
      */
-    public function store(Request $request)
-    {
-        $send_message = $request->get('send_message');
-        $send_file = $request->file('send_file');
-        $user_id = $request->get('send_user_id');
-        $room_id = $request->get('send_room_id');
+    // public function store(Request $request)
+    // {
+    //     $send_message = $request->get('send_message');
+    //     $send_file = $request->file('send_file');
+    //     $user_id = $request->get('send_user_id');
+    //     $room_id = $request->get('send_room_id');
 
-        $this->messageRepository->create($send_message, $send_file, $user_id, $room_id);
+    //     $this->messageRepository->create($send_message, $send_file, $user_id, $room_id);
 
-        // リアルタイム化のためイベントリスナーを呼び出し
-        event(new ChatEvent($send_message, $user_id, $room_id));
+    //     // リアルタイム化のためイベントリスナーを呼び出し
+    //     event(new ChatEvent($send_message, $user_id, $room_id));
 
-        // chat画面にリダイレクト
-        return to_route('chats.index', ['room_id' => $room_id]);
-    }
+    //     // chat画面にリダイレクト
+    //     return to_route('chats.index', ['room_id' => $room_id]);
+    // }
 }

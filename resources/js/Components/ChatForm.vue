@@ -45,8 +45,6 @@ const emitMessage = () => {
     // フォームをクリア
     form.content = ''
     form.file = null
-    form.user_id = ''
-    form.room_id = ''
 }
 </script>
 <template>
